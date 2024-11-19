@@ -19,7 +19,7 @@ app.delete("/user", (req, res) => {
 });
 
 app.use("/test", (req, res) => {
-  res.send("Test Test...");
+  res.send("MY BP is Raising...");
 });
 
 app.use("/get", (req, res) => {
