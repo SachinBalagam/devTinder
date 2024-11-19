@@ -19,7 +19,7 @@ app.delete("/user", (req, res) => {
 });
 
 app.use("/test", (req, res) => {
-  res.send("Test Test Test...");
+  res.send("Test Test...");
 });
 
 app.use("/get", (req, res) => {
