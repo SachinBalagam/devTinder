@@ -21,6 +21,21 @@ app.post("/user/login", (req, res) => {
   res.send("User login Successfully");
 });
 
+app.get("/getUserdata", (req, res) => {
+  try {
+    throw new Error("ghjadkl;;sjhjsdgs");
+    res.send("hello world");
+  } catch {
+    res.status(500).send("SOMETHING WENT WRONG");
+  }
+});
+
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
 app.listen(3000, () => {
   console.log("Server is listening on port 3000");
 });
