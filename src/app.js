@@ -1,41 +1,38 @@
 const express = require("express");
 
 const app = express();
-const { authUser, authAdmin } = require("./middlewares/auth");
+const connectDB = require("./config/database");
+const User = require("./models/user");
 
-app.use("/admin", authAdmin);
+app.use(express.json());
 
-app.get("/admin/getData", (req, res) => {
-  res.send("All Data sent");
-});
+app.post("/signup", async (req, res) => {
+  // console.log(req.body);
 
-app.get("/admin/deleteUser", (req, res) => {
-  res.send("User Deleted Successfully");
-});
-
-app.get("/user", authUser, (req, res) => {
-  res.send("User Data Fetched");
-});
-
-app.post("/user/login", (req, res) => {
-  res.send("User login Successfully");
-});
-
-app.get("/getUserdata", (req, res) => {
+  // const userObj = {
+  //   firstName: "Sachin",
+  //   lastName: "Balagam",
+  //   age: 27,
+  //   emailId: "sachin@gmail.com",
+  //   gender: "Male",
+  //   password: "123456789",
+  // };
+  const user = new User(req.body);
   try {
-    throw new Error("ghjadkl;;sjhjsdgs");
-    res.send("hello world");
-  } catch {
-    res.status(500).send("SOMETHING WENT WRONG");
+    await user.save();
+    res.send("User Created Successfully");
+  } catch (err) {
+    res.status(400).send("Error saving the user :" + err.message);
   }
 });
 
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.status(500).send("Something went wrong");
-  }
-});
-
-app.listen(3000, () => {
-  console.log("Server is listening on port 3000");
-});
+connectDB()
+  .then(() => {
+    console.log("Database Connection Established");
+    app.listen(3000, () => {
+      console.log("Server is listening on port 3000");
+    });
+  })
+  .catch((err) => {
+    console.error("Database cannot be connected");
+  });
