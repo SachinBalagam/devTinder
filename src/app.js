@@ -35,6 +35,29 @@ app.get("/feed", async (req, res) => {
   }
 });
 
+app.patch("/user", async (req, res) => {
+  const userDetils = req.body;
+  const userId = req.body.userId;
+  try {
+    console.log(userDetils);
+    console.log(userId);
+    await User.findByIdAndUpdate({ _id: userId }, userDetils);
+    res.send("User Updated Successfully");
+  } catch (err) {
+    res.status(400).send("Something Went Wrong");
+  }
+});
+
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    await User.findByIdAndDelete(userId);
+    res.send("user Deleted Successfully");
+  } catch (err) {
+    res.status(400).send("Something Went Wrong");
+  }
+});
+
 app.post("/signup", async (req, res) => {
   // console.log(req.body);
 
