@@ -60,3 +60,17 @@ and also create collections in it.
 
 app.use() -> Matches all the HTTP Methods
 app.get() -> Matches only HTTP GET Method
+
+some path patterns
+
+1. /ab?c -> here is b is optional
+2. /ab+c -> here b can be used n number of times like /abbbbbbbbbbc
+3. /ab\*(star)cd => here after 'ab' you can place any thing and at last you need to give 'cd' like /abSACHINcd
+
+we can do multiple things here like /a(bc)?d
+Here now 'bc' is optional
+
+We can also write regex in that path like '/a/'
+It will work if in the given path atleast one 'a' present like /cab or /race or /pmal
+
+1. /.\*fly$/ -> starts with anything any ends with fly
