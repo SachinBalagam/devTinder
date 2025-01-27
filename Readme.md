@@ -44,3 +44,19 @@ S02 E04
 4. we should not push the node_modules to the git hub because anyways we can install all modules with npm install command.
 
 5. so to ignore node-modules we should create a .gitignore file and write the path of node-modules so that git wont track those files or folders which we are given in the .gitignore file.
+
+6. create a remote repository in github and push all the code to that remote repository
+
+## Routing and Request Handlers
+
+app.use("/", (req, res) => {
+res.send("Hi from server /");
+});
+
+Here after this code what ever you give for app.use(), it wont trigger because it executes line by line and in the first line itself "/" is there so what ever the response sends from this function it show that only.
+
+To execute post,put,patch,delete we need POSTMAN application.Dowload it and create a workspace there
+and also create collections in it.
+
+app.use() -> Matches all the HTTP Methods
+app.get() -> Matches only HTTP GET Method
