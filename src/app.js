@@ -1,37 +1,21 @@
-const express = require("express");
+import { authVerification, userAuth } from "./middlewares/auth.js";
+import express from "express";
 
 const app = express();
+// app.use(express.json());
 
-app.get(
-  "/user",
-  [
-    (req, res, next) => {
-      console.log("1st Response ");
-      // res.send({ firstName: "1st Response" });
-      next();
-    },
-    (req, res, next) => {
-      console.log("2nd Response");
-      next();
-    },
-  ],
-  (req, res, next) => {
-    console.log("3rd Response");
-    next();
-  },
-  (req, res) => {
-    console.log("4th Response");
-    res.send("4th Response");
-  }
-);
+app.use("/admin", authVerification);
 
-app.get("/user/:id", (req, res) => {
-  console.log(req.params);
-  res.send({ firstName: req.params });
+app.get("/admin/getAllUserData", (req, res) => {
+  res.send("All Data Send");
 });
 
-app.get("/ab?c", (req, res) => {
-  res.send({ firstName: "Sachin", lastName: "Balagam" });
+app.get("/admin/deleteUser", (req, res) => {
+  res.send("User Deleted");
+});
+
+app.get("/user", userAuth, (req, res) => {
+  res.send("User Data fetched");
 });
 
 app.use("/test", (req, res) => {

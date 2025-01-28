@@ -98,3 +98,34 @@ console.log("2nd Response");
 res.send("2nd Response");
 }
 );
+
+2. We can add multiple route handlers in single request like
+   app.get('/', [rh1, rh2, rh3],rh4,rh5)
+   rh -> route handlers
+
+3. we need to use next() in the function to execute the route handlers like
+
+app.get(
+"/user",
+[
+(req, res, next) => {
+console.log("1st Response ");
+// res.send({ firstName: "1st Response" });
+next();
+},
+(req, res, next) => {
+console.log("2nd Response");
+next();
+},
+],
+(req, res, next) => {
+console.log("3rd Response");
+next();
+},
+(req, res) => {
+console.log("4th Response");
+res.send("4th Response");
+}
+);
+
+what is diff between app.use() and app.all()
