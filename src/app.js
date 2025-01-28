@@ -2,10 +2,28 @@ const express = require("express");
 
 const app = express();
 
-app.get("/user", (req, res) => {
-  console.log(req.query);
-  res.send({ firstName: req.query });
-});
+app.get(
+  "/user",
+  [
+    (req, res, next) => {
+      console.log("1st Response ");
+      // res.send({ firstName: "1st Response" });
+      next();
+    },
+    (req, res, next) => {
+      console.log("2nd Response");
+      next();
+    },
+  ],
+  (req, res, next) => {
+    console.log("3rd Response");
+    next();
+  },
+  (req, res) => {
+    console.log("4th Response");
+    res.send("4th Response");
+  }
+);
 
 app.get("/user/:id", (req, res) => {
   console.log(req.params);

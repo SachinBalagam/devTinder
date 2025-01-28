@@ -74,3 +74,27 @@ We can also write regex in that path like '/a/'
 It will work if in the given path atleast one 'a' present like /cab or /race or /pmal
 
 1. /.\*fly$/ -> starts with anything any ends with fly
+
+S02 E05 Middlewares and Error Handlers
+
+1. what will happens if we dont send any response if someone called a method like,
+
+app.get('/', (req,res)=>{
+
+})
+
+what will we get response here...
+
+2. what will we get response for below
+
+app.get(
+"/user",
+(req, res) => {
+console.log(req.query);
+res.send({ firstName: req.query });
+},
+(req, res) => {
+console.log("2nd Response");
+res.send("2nd Response");
+}
+);
