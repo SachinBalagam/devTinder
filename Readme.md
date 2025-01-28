@@ -129,3 +129,5 @@ res.send("4th Response");
 );
 
 what is diff between app.use() and app.all()
+
+app.use('/', (err,req,res,next)=>{})
