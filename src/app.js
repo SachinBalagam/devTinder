@@ -1,23 +1,37 @@
-import { authVerification, userAuth } from "./middlewares/auth.js";
+// import { authVerification, userAuth } from "./middlewares/auth.js";
+import { dbConnect } from "./database/database.js";
+import { UserModel } from "./models/user.js";
+
 import express from "express";
-
 const app = express();
-// app.use(express.json());
 
-app.get("/getUserData", (req, res) => {
+app.post("/signup", async (req, res) => {
   try {
-    console.log("Enter");
-    throw new Error("false error");
-    res.send("send Error");
+    const userObj = {
+      firstName: "Sachin Kumar",
+      lastName: "Balagam",
+      emailId: "sachin333@gmail.com",
+    };
+    const user = new UserModel(userObj);
+    await user.save();
+    res.send("User Saved Successfully");
   } catch (err) {
-    res.status(404).send("Error Found");
+    console.error("Error Message", err);
   }
+
+  //   const user = new UserModel({
+  //     firstName: "Sachin",
+  //     lastName: "Balagam",
+  //     emailId: "sachin@gmail.com",
+  //   });
 });
 
-app.use("/", (err, req, res, next) => {
-  if (err) {
-    res.send(500).send("something Went Wrong");
+(async () => {
+  try {
+    await dbConnect();
+    console.log("Connected to the cluster");
+    app.listen(7777, () => console.log("listening to port 7777"));
+  } catch (error) {
+    console.log("Not able to connect");
   }
-});
-
-app.listen(7777, () => console.log("listening to port 7777"));
+})();

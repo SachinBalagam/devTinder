@@ -131,3 +131,53 @@ res.send("4th Response");
 what is diff between app.use() and app.all()
 
 app.use('/', (err,req,res,next)=>{})
+
+## S02 E06 Database Schemas, Models and Mangoose
+
+1. what is cluster? Types of cluster
+2. what is atlas
+3. what is mongodb compass
+4. what is mongoose
+
+mongoose.connect() is used to connect to the cluster.
+
+The mongoose.connect() method indeed returns a Promise, which represents the eventual completion (or failure) of the asynchronous database connection operation. To handle this promise, you can either use .then()/.catch() or the modern async/await syntax.
+
+"mongodb+srv://username:password@namastenode.rs16p.mongodb.net/"
+Add your username and password in place os those strings
+The above path is to connect to the cluster
+
+if you want to connect to the particular database you can add it to the end of that string
+mongodb+srv://username:password@namastenode.rs16p.mongodb.net/devTinder
+
+First we need to connect to the cluster/database then we need to listen to the port 7777. we need to write a program in that way
+
+## Creating Schemas and models using mongoose
+
+import mongoose from 'mongoose';
+const userSchema = new mongoose.Schema({
+firstName:{
+type:String
+},
+firstName:{
+type:String
+}
+})
+
+export const UserModel = mongoose.model("User", userSchema);
+1.Here model names should starts with capital letters
+
+## creating Usermodel instance with the actual details and saving to database
+
+app.post('/user', async (req,res)=>{
+const userObj = {
+firstName:"sachin",
+lastName:"balagam"
+}
+const user = new UserModel(userObj);
+await user.save(); -> here it saves the data
+})
+
+## flow of mongodb
+
+cluster -> server -> database -> collection -> document
