@@ -185,3 +185,13 @@ cluster -> server -> database -> collection -> document
 find()
 findOne()
 findById()
+findByIdAndDelete()
+findByIdAndUpdate()
+
+## Data Sanitization and schema validations
+
+-> required:true
+-> uniques : true
+-> default : "Description of yourself"
+-> lowercase : true
+-> trim : true
