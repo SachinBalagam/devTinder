@@ -195,3 +195,19 @@ findByIdAndUpdate()
 -> default : "Description of yourself"
 -> lowercase : true
 -> trim : true
+-> minLength: 3 -> for strings
+-> maxLength: 50 -> for strings
+-> min:2 -> for numbers
+-> max:10 -> for numbers
+-> validate(value) {
+if (["male", "female", "others"].includes(value)) {
+throw new Error("Gender data is not valid");
+}
+}
+validate only works only for new document creation not on updation of old documents
+so to validate the old documents will to to explicity define it in the methods
+for example findByIdAndUpdate(\_id,data.runValidators:true)
+
+-> To know when the document is created or updated we need to add timestamps key in the schema
+
+const userSchema = mongoose.Schema({firstname:{type:string}.........},{timestamps:true})

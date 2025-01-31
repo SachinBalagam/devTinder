@@ -11,9 +11,14 @@ app.post("/signup", async (req, res) => {
   const { firstName, age, emailId, password } = req.body;
   const userObj = {
     firstName,
-    age,
+    lastName,
     emailId,
     password,
+    age,
+    gender,
+    about,
+    photoUrl,
+    skills,
   };
   try {
     const user = new UserModel(userObj);
@@ -73,23 +78,32 @@ app.delete("/user", async (req, res) => {
 });
 
 app.patch("/user", async (req, res) => {
-  const userEmail = req.body.email;
+  const userEmail = req.body.emailId;
   const user = await UserModel.findOne({ emailId: userEmail });
   try {
     if (user) {
       const object = {
         firstName: req.body.firstName,
         lastName: req.body.lastName,
+        emailId: req.body.emailId,
+        password: req.body.password,
         age: req.body.age,
+        gender: req.body.gender,
+        about: req.body.about,
+        photoUrl: req.body.photoUrl,
+        skills: req.body.skills,
       };
-      await UserModel.findByIdAndUpdate({ _id: user._id }, object);
+      await UserModel.findByIdAndUpdate({ _id: user._id }, object, {
+        returnDocument: "after",
+        runValidators: true,
+      });
       res.send("User updated successfully");
     } else {
       res.status(404).send("User not found");
     }
   } catch (err) {
     console.log(err);
-    res.status(401).send("Something went wrong");
+    res.status(401).send("Update Error:" + err.message);
   }
 });
 
