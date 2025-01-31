@@ -181,3 +181,7 @@ await user.save(); -> here it saves the data
 ## flow of mongodb
 
 cluster -> server -> database -> collection -> document
+
+find()
+findOne()
+findById()
