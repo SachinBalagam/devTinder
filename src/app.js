@@ -8,7 +8,17 @@ const app = express();
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const { firstName, age, emailId, password } = req.body;
+  const {
+    firstName,
+    lastName,
+    emailId,
+    password,
+    age,
+    gender,
+    about,
+    photoUrl,
+    skills,
+  } = req.body;
   const userObj = {
     firstName,
     lastName,
@@ -25,16 +35,9 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.send("User Saved Successfully");
   } catch (err) {
-    console.error("Error Message");
     res.status(401).send(err.message);
   }
 });
-
-//   const user = new UserModel({
-//     firstName: "Sachin",
-//     lastName: "Balagam",
-//     emailId: "sachin@gmail.com",
-//   });
 
 app.get("/user", async (req, res) => {
   const userEmail = req.body.email;
@@ -79,8 +82,23 @@ app.delete("/user", async (req, res) => {
 
 app.patch("/user", async (req, res) => {
   const userEmail = req.body.emailId;
-  const user = await UserModel.findOne({ emailId: userEmail });
+
   try {
+    const ALLOWED_UPDATES = [
+      "emailId",
+      "gender",
+      "age",
+      "about",
+      "photoUrl",
+      "skills",
+    ];
+    const isUpdates = Object.keys(req.body).every((key) =>
+      ALLOWED_UPDATES.includes(key)
+    );
+    if (!isUpdates) {
+      throw new Error("Invalid update");
+    }
+    const user = await UserModel.findOne({ emailId: userEmail });
     if (user) {
       const object = {
         firstName: req.body.firstName,

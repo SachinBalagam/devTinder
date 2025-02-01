@@ -1,5 +1,6 @@
 // const mongoose = require("mongoose");
 import mongoose from "mongoose";
+import validator from "validator";
 
 const userSchema = new mongoose.Schema(
   {
@@ -17,6 +18,12 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      validate(value) {
+        const isValid = validator.isEmail(value);
+        if (!isValid) {
+          throw new Error("Invalid Email : " + value);
+        }
+      },
     },
     gender: {
       type: String,
@@ -29,6 +36,12 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      validate(value) {
+        const isValid = validator.isStrongPassword(value);
+        if (!isValid) {
+          throw new Error("Invalid Password : " + value);
+        }
+      },
     },
     age: {
       type: Number,
@@ -37,6 +50,12 @@ const userSchema = new mongoose.Schema(
     },
     photoUrl: {
       type: String,
+      validate(value) {
+        const isValid = validator.isURL(value);
+        if (!isValid) {
+          throw new Error("Invalid URL : " + value);
+        }
+      },
     },
     about: {
       type: String,
@@ -44,6 +63,28 @@ const userSchema = new mongoose.Schema(
     },
     skills: {
       type: [String],
+      validate: [
+        {
+          validator: function (value) {
+            return value.length >= 1 && value.length <= 5;
+          },
+          message: "Skills should be between 1 and 5",
+        },
+        {
+          validator: function (skills) {
+            return new Set(skills).size === skills.length;
+          },
+          message: "No duplicates allowed",
+        },
+        {
+          validator: function (skills) {
+            return skills.every(
+              (skill) => skill.length >= 3 && skill.length <= 10
+            );
+          },
+          message: "Each skill must be 3-10 characters long.",
+        },
+      ],
     },
   },
   { timestamps: true }

@@ -211,3 +211,16 @@ for example findByIdAndUpdate(\_id,data.runValidators:true)
 -> To know when the document is created or updated we need to add timestamps key in the schema
 
 const userSchema = mongoose.Schema({firstname:{type:string}.........},{timestamps:true})
+
+-> To validate email is important because is user trying to register with some dummy data, we should not make him to register. so we need a email validator
+
+npm i validator
+
+import validator from 'validator'
+validator.isEmail('your_email') -> return true or false
+-> we can write this in schema level validation or API level validation as you wish.
+-> we can also check many other validations from the above validator module
+like we can check if weather give photoUrl is valid url or not
+-> validator.isURL(value)
+we can add password validations
+-> validator.isStrongPassword(value)
