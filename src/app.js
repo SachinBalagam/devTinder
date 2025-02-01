@@ -1,7 +1,8 @@
 // import { authVerification, userAuth } from "./middlewares/auth.js";
 import { dbConnect } from "./database/database.js";
 import { UserModel } from "./models/user.js";
-
+import { validateSignup, validateLogin } from "./utils/validators.js";
+import bcrypt from "bcrypt";
 import express from "express";
 const app = express();
 
@@ -19,21 +20,43 @@ app.post("/signup", async (req, res) => {
     photoUrl,
     skills,
   } = req.body;
-  const userObj = {
-    firstName,
-    lastName,
-    emailId,
-    password,
-    age,
-    gender,
-    about,
-    photoUrl,
-    skills,
-  };
   try {
+    validateSignup(req);
+    const hashPassword = await bcrypt.hash(password, 10);
+    const userObj = {
+      firstName,
+      lastName,
+      emailId,
+      password: hashPassword,
+      age,
+      gender,
+      about,
+      photoUrl,
+      skills,
+    };
     const user = new UserModel(userObj);
     await user.save();
     res.send("User Saved Successfully");
+  } catch (err) {
+    res.status(401).send(err.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  const { emailId, password } = req.body;
+  try {
+    validateLogin(req);
+    const user = await UserModel.findOne({ emailId });
+    if (user) {
+      const isValid = await bcrypt.compare(password, user.password);
+      if (isValid) {
+        res.send("User Logged Successfully");
+      } else {
+        res.status(401).send("Invalid Credentials");
+      }
+    } else {
+      res.status(404).send("Invalid Credentials");
+    }
   } catch (err) {
     res.status(401).send(err.message);
   }

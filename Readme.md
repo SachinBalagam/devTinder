@@ -224,3 +224,20 @@ like we can check if weather give photoUrl is valid url or not
 -> validator.isURL(value)
 we can add password validations
 -> validator.isStrongPassword(value)
+
+-> NEVER TRUST req.body <-
+
+## Encrypting passwords
+
+-> while signup the user we need to validate the coming req.body as we cannot trust the req.body
+-> so create a folder with utils and file with validator.js
+-> write a function with validatesignup and check the required fields and validate it throw proper messages so that user can understand and export that function and import in app.js file and call it in the signup API before saving the details
+
+->To encrypt the password we need to use a npm module called bcrypt
+
+npm i bcrypt
+
+import bcrypt from 'bcrypt'
+
+bcrypt.hash(plainpassword, saltrounds) --> To encrypt the password
+bcrypt.compare(plainpassword, hashpassword) --> To compare the given password with hash password
