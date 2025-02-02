@@ -4,9 +4,13 @@ import { UserModel } from "./models/user.js";
 import { validateSignup, validateLogin } from "./utils/validators.js";
 import bcrypt from "bcrypt";
 import express from "express";
+import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
+
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   const {
@@ -50,6 +54,8 @@ app.post("/login", async (req, res) => {
     if (user) {
       const isValid = await bcrypt.compare(password, user.password);
       if (isValid) {
+        const token = await jwt.sign({ _id: user._id }, "@DevTinder$567");
+        res.cookie("token", token);
         res.send("User Logged Successfully");
       } else {
         res.status(401).send("Invalid Credentials");
@@ -59,6 +65,26 @@ app.post("/login", async (req, res) => {
     }
   } catch (err) {
     res.status(401).send(err.message);
+  }
+});
+
+app.get("/profile", async (req, res) => {
+  try {
+    const cookie = req.cookies;
+    const { token } = cookie;
+    if (!token) {
+      throw new Error("User not authorised");
+    }
+    const decodedData = jwt.verify(token, "@DevTinder$567");
+    const { _id } = decodedData;
+    const user = await UserModel.findById(_id);
+    if (user) {
+      res.send(user);
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (err) {
+    res.status(401).send("Error : " + err.message);
   }
 });
 
@@ -72,7 +98,6 @@ app.get("/user", async (req, res) => {
       res.status(404).send("User not found");
     }
   } catch (err) {
-    console.log(err);
     res.status(401).send("Something went wrong");
   }
 });
@@ -82,7 +107,6 @@ app.get("/feed", async (req, res) => {
     const users = await UserModel.find({});
     res.send(users);
   } catch (err) {
-    console.log(err);
     res.status(401).send("Something went wrong");
   }
 });
@@ -98,7 +122,6 @@ app.delete("/user", async (req, res) => {
       res.status(404).send("User not found");
     }
   } catch (err) {
-    console.log(err);
     res.status(401).send("Something went wrong");
   }
 });
@@ -143,7 +166,6 @@ app.patch("/user", async (req, res) => {
       res.status(404).send("User not found");
     }
   } catch (err) {
-    console.log(err);
     res.status(401).send("Update Error:" + err.message);
   }
 });

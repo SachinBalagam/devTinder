@@ -241,3 +241,26 @@ import bcrypt from 'bcrypt'
 
 bcrypt.hash(plainpassword, saltrounds) --> To encrypt the password
 bcrypt.compare(plainpassword, hashpassword) --> To compare the given password with hash password
+
+## Authentication, JWT Token and Cookies
+
+-> Send Cookie to user via express response
+res.cookie("name","value")
+
+-> To parse the cookie we need a cookie parser and that is cookie-parser
+npm i cookie-parser (developed by express js team itself)
+import cookieParser from 'cookie-parser'
+app.use(cookieParser())
+
+-> To create a token we need a npm module called jsonwebtoken
+npm i jsonwebtoken
+import jwt from 'jsonwebtoken'
+
+const token = jwt.sign({secretdata}, "secretkey");
+ex : const token = jwt.sign({\_id:user.\_id}, "@DevTinder$567")
+
+-> To verify token
+
+const decodedData = jwt.verify(token, secretkey);
+ex: const decodedData = jwt.verify(token, "@DevTinder$567")
+const {\_id} = decodedData
