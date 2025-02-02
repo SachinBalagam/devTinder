@@ -264,3 +264,10 @@ ex : const token = jwt.sign({\_id:user.\_id}, "@DevTinder$567")
 const decodedData = jwt.verify(token, secretkey);
 ex: const decodedData = jwt.verify(token, "@DevTinder$567")
 const {\_id} = decodedData
+
+-> we can set expire time to jwt as well as cookies
+
+## middlewares
+
+-> To elimate the reduntant code middlewares are used
+-> create a function in another folder and attach it wherever it required

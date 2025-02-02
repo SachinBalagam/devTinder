@@ -2,6 +2,7 @@
 import { dbConnect } from "./database/database.js";
 import { UserModel } from "./models/user.js";
 import { validateSignup, validateLogin } from "./utils/validators.js";
+import { userAuth } from "./middlewares/auth.js";
 import bcrypt from "bcrypt";
 import express from "express";
 import cookieParser from "cookie-parser";
@@ -54,8 +55,13 @@ app.post("/login", async (req, res) => {
     if (user) {
       const isValid = await bcrypt.compare(password, user.password);
       if (isValid) {
-        const token = await jwt.sign({ _id: user._id }, "@DevTinder$567");
-        res.cookie("token", token);
+        const token = await jwt.sign({ _id: user._id }, "@DevTinder$567", {
+          expiresIn: "1h",
+        });
+        res.cookie("token", token, {
+          expires: new Date(Date.now() + 900000),
+          httpOnly: true,
+        });
         res.send("User Logged Successfully");
       } else {
         res.status(401).send("Invalid Credentials");
@@ -68,106 +74,22 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    const cookie = req.cookies;
-    const { token } = cookie;
-    if (!token) {
-      throw new Error("User not authorised");
-    }
-    const decodedData = jwt.verify(token, "@DevTinder$567");
-    const { _id } = decodedData;
-    const user = await UserModel.findById(_id);
+    const user = req.user;
     if (user) {
       res.send(user);
     } else {
-      res.status(404).send("User not found");
+      throw new Error("User not found");
     }
   } catch (err) {
     res.status(401).send("Error : " + err.message);
   }
 });
 
-app.get("/user", async (req, res) => {
-  const userEmail = req.body.email;
-  try {
-    const user = await UserModel.find({ emailId: userEmail });
-    if (user.length >= 1) {
-      res.send(user);
-    } else {
-      res.status(404).send("User not found");
-    }
-  } catch (err) {
-    res.status(401).send("Something went wrong");
-  }
-});
-
-app.get("/feed", async (req, res) => {
-  try {
-    const users = await UserModel.find({});
-    res.send(users);
-  } catch (err) {
-    res.status(401).send("Something went wrong");
-  }
-});
-
-app.delete("/user", async (req, res) => {
-  try {
-    const userEmail = req.body.email;
-    const user = await UserModel.findOne({ emailId: userEmail });
-    if (user) {
-      await UserModel.findByIdAndDelete({ _id: user._id });
-      res.send("User deleted successfully");
-    } else {
-      res.status(404).send("User not found");
-    }
-  } catch (err) {
-    res.status(401).send("Something went wrong");
-  }
-});
-
-app.patch("/user", async (req, res) => {
-  const userEmail = req.body.emailId;
-
-  try {
-    const ALLOWED_UPDATES = [
-      "emailId",
-      "gender",
-      "age",
-      "about",
-      "photoUrl",
-      "skills",
-    ];
-    const isUpdates = Object.keys(req.body).every((key) =>
-      ALLOWED_UPDATES.includes(key)
-    );
-    if (!isUpdates) {
-      throw new Error("Invalid update");
-    }
-    const user = await UserModel.findOne({ emailId: userEmail });
-    if (user) {
-      const object = {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        emailId: req.body.emailId,
-        password: req.body.password,
-        age: req.body.age,
-        gender: req.body.gender,
-        about: req.body.about,
-        photoUrl: req.body.photoUrl,
-        skills: req.body.skills,
-      };
-      await UserModel.findByIdAndUpdate({ _id: user._id }, object, {
-        returnDocument: "after",
-        runValidators: true,
-      });
-      res.send("User updated successfully");
-    } else {
-      res.status(404).send("User not found");
-    }
-  } catch (err) {
-    res.status(401).send("Update Error:" + err.message);
-  }
+app.post("/sendConnection", userAuth, async (req, res) => {
+  const user = req.user;
+  res.send(user.firstName + " sent the connection request");
 });
 
 (async () => {
