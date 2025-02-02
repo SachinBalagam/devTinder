@@ -271,3 +271,13 @@ const {\_id} = decodedData
 
 -> To elimate the reduntant code middlewares are used
 -> create a function in another folder and attach it wherever it required
+
+## handlers functions for schemas
+
+-> we can attach functions to the schemas itself to off loads from the api requests for example creating json token in api request. it can be done in handler function.
+
+-> here always we use normal function not arrow function
+userSchema.methods.getJWT = async function(){
+const user = this;
+const token = await jwt.sign({\_id:user.\_id}, "secretkey", {expiresIn:"1hr"})
+}

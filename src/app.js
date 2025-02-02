@@ -6,7 +6,6 @@ import { userAuth } from "./middlewares/auth.js";
 import bcrypt from "bcrypt";
 import express from "express";
 import cookieParser from "cookie-parser";
-import jwt from "jsonwebtoken";
 
 const app = express();
 
@@ -53,11 +52,9 @@ app.post("/login", async (req, res) => {
     validateLogin(req);
     const user = await UserModel.findOne({ emailId });
     if (user) {
-      const isValid = await bcrypt.compare(password, user.password);
+      const isValid = await user.validPassword(password);
       if (isValid) {
-        const token = await jwt.sign({ _id: user._id }, "@DevTinder$567", {
-          expiresIn: "1h",
-        });
+        const token = await user.getJWT();
         res.cookie("token", token, {
           expires: new Date(Date.now() + 900000),
           httpOnly: true,
