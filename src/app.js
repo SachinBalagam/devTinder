@@ -18,8 +18,7 @@ app.use("/", requestRouter);
 (async () => {
   try {
     await dbConnect();
-    console.log("Connected to the cluster");
-    app.listen(7777, () => console.log("listening to port 7777"));
+    app.listen(7777, () => console.log("Listening to port 7777"));
   } catch (error) {
     console.log("Not able to connect");
   }

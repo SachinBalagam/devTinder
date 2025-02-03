@@ -61,5 +61,9 @@ authrouter.post("/login", async (req, res) => {
     }
   } catch (err) {
     res.status(401).send(err.message);
-  }
+  } 
 });
+
+authrouter.post("/logout", (req,res)=>{
+  res.cookie("token",null,{expires:new Date(Date.now())}).send("Logout Successful")
+})
