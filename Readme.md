@@ -326,3 +326,30 @@ connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
 
 ->Schema.pre("save",function(){})
 It is used as a middleware where on each save this function runs in pre.
+
+# Refs, Populates
+
+const connectionRequestSchema = new mongoose.Schema(
+{
+fromUserId: {
+type: mongoose.Schema.Types.ObjectId,
+required: true,
+ref: "User",
+},
+}
+
+const connectionRequest = await connectionRequestModel
+.find({
+$or: [
+{ fromUserId: loggedInuser._id, status: "accepted" },
+{ toUserId: loggedInuser._id, status: "accepted" },
+],
+})
+.populate("fromUserId toUserId", [
+"firstName",
+"lastName",
+"photoUrl",
+"skills",
+"about",
+"gender",
+]);
