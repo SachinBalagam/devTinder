@@ -283,3 +283,46 @@ const token = await jwt.sign({\_id:user.\_id}, "secretkey", {expiresIn:"1hr"})
 }
 
 ## express router
+
+It is used to divided the APIs based on their nature like auth,profile,requests etc.,
+
+import express from "express";
+export const authrouter = express.Router();
+
+requestRouter.post(
+"/request/send/:status/:toUserId",
+userAuth,
+async (req, res) => {
+try {
+const fromUserId = req.user.\_id;
+const toUserId = req.params.toUserId;
+const status = req.params.status;
+
+      const connectionRequest = new connectionRequestModel({
+        fromUserId,
+        toUserId,
+        status,
+      });
+      const data = await connectionRequest.save();
+      res.json({
+        message: "Request Sent Successfully",
+        data,
+      });
+    } catch (err) {
+      res.status(400).send("ERROR : " + err.message);
+    }
+
+}
+);
+
+we can import and use in app.js file with
+
+app.use("/", requestRouter);
+
+## Logical DB query and compound indexing
+
+-> compound index
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 });
+
+->Schema.pre("save",function(){})
+It is used as a middleware where on each save this function runs in pre.
