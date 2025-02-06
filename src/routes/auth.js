@@ -52,7 +52,7 @@ authrouter.post("/login", async (req, res) => {
           expires: new Date(Date.now() + 900000),
           httpOnly: true,
         });
-        res.send("User Logged Successfully");
+        res.json({ message: "User Logged Successfully", data: user });
       } else {
         res.status(401).send("Invalid Credentials");
       }
@@ -61,9 +61,11 @@ authrouter.post("/login", async (req, res) => {
     }
   } catch (err) {
     res.status(401).send(err.message);
-  } 
+  }
 });
 
-authrouter.post("/logout", (req,res)=>{
-  res.cookie("token",null,{expires:new Date(Date.now())}).send("Logout Successful")
-})
+authrouter.post("/logout", (req, res) => {
+  res
+    .cookie("token", null, { expires: new Date(Date.now()) })
+    .send("Logout Successful");
+});
