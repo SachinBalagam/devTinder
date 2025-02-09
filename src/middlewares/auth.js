@@ -6,7 +6,7 @@ export const userAuth = async (req, res, next) => {
   try {
     const { token } = req.cookies;
     if (!token) {
-      return res.status(401).send("User not authorised");
+      return res.status(401).send("Not User not authorised");
     }
     // validate the token
     const decodedData = jwt.verify(token, "@DevTinder$567");

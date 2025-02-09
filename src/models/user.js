@@ -69,28 +69,28 @@ const userSchema = new mongoose.Schema(
     },
     skills: {
       type: [String],
-      validate: [
-        {
-          validator: function (value) {
-            return value.length >= 1 && value.length <= 5;
-          },
-          message: "Skills should be between 1 and 5",
-        },
-        {
-          validator: function (skills) {
-            return new Set(skills).size === skills.length;
-          },
-          message: "No duplicates allowed",
-        },
-        {
-          validator: function (skills) {
-            return skills.every(
-              (skill) => skill.length >= 3 && skill.length <= 10
-            );
-          },
-          message: "Each skill must be 3-10 characters long.",
-        },
-      ],
+      // validate: [
+      //   {
+      //     validator: function (value) {
+      //       return value.length >= 1 && value.length <= 5;
+      //     },
+      //     message: "Skills should be between 1 and 5",
+      //   },
+      //   {
+      //     validator: function (skills) {
+      //       return new Set(skills).size === skills.length;
+      //     },
+      //     message: "No duplicates allowed",
+      //   },
+      //   {
+      //     validator: function (skills) {
+      //       return skills.every(
+      //         (skill) => skill.length >= 3 && skill.length <= 10
+      //       );
+      //     },
+      //     message: "Each skill must be 3-10 characters long.",
+      //   },
+      // ],
     },
   },
   { timestamps: true }

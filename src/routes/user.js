@@ -87,8 +87,6 @@ userRouter.get("/user/feed", userAuth, async (req, res) => {
       hideConnectionsFeed.add(each.toUserId._id.toString());
     });
 
-    console.log(hideConnectionsFeed);
-
     const users = await UserModel.find({
       $and: [
         { _id: { $ne: loggedInuser._id } },

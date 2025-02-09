@@ -32,8 +32,14 @@ authrouter.post("/signup", async (req, res) => {
       skills,
     };
     const user = new UserModel(userObj);
-    await user.save();
-    res.send("User Saved Successfully");
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    });
+
+    res.json({ message: "User Saved Successfully", data: savedUser });
   } catch (err) {
     res.status(401).send(err.message);
   }
