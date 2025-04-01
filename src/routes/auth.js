@@ -32,8 +32,14 @@ authrouter.post("/signup", async (req, res) => {
       skills,
     };
     const user = new UserModel(userObj);
-    await user.save();
-    res.send("User Saved Successfully");
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    });
+
+    res.json({ message: "User Saved Successfully", data: savedUser });
   } catch (err) {
     res.status(401).send(err.message);
   }
@@ -49,10 +55,10 @@ authrouter.post("/login", async (req, res) => {
       if (isValid) {
         const token = await user.getJWT();
         res.cookie("token", token, {
-          expires: new Date(Date.now() + 900000),
+          expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
           httpOnly: true,
         });
-        res.send("User Logged Successfully");
+        res.json({ message: "User Logged Successfully", data: user });
       } else {
         res.status(401).send("Invalid Credentials");
       }
@@ -61,9 +67,11 @@ authrouter.post("/login", async (req, res) => {
     }
   } catch (err) {
     res.status(401).send(err.message);
-  } 
+  }
 });
 
-authrouter.post("/logout", (req,res)=>{
-  res.cookie("token",null,{expires:new Date(Date.now())}).send("Logout Successful")
-})
+authrouter.post("/logout", (req, res) => {
+  res
+    .cookie("token", null, { expires: new Date(Date.now()) })
+    .send("Logout Successful");
+});
